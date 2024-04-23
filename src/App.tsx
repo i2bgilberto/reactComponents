@@ -1,9 +1,9 @@
-import ExpenseList from "./components/expenseTracker/ExpenseList";
+import ExpenseTracker from "./components/ExpenseTracker";
 
 function App() {
   return (
     <>
-      <ExpenseList />
+      <ExpenseTracker />
     </>
   );
 }
