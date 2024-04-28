@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosError, CanceledError } from "axios";
+import { set } from "react-hook-form";
 
 interface User {
   id: number;
@@ -14,6 +15,7 @@ const FetchUser = () => {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
+    // Fetch users
     const fetchData = async () => {
       axios
         .get<User[]>("https://jsonplaceholder.typicode.com/users", {
@@ -30,10 +32,9 @@ const FetchUser = () => {
 
       return () => controller.abort();
     };
-
     fetchData();
   }, []);
-
+  // Delete a user
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
     setUsers(users.filter((u) => u.id !== user.id));
@@ -45,11 +46,51 @@ const FetchUser = () => {
         setUsers(originalUsers);
       });
   };
+  // Add a new user
+  const addUser = () => {
+    const originalUsers = [...users];
+    const newUser = {
+      id: 0,
+      username: "Ramon",
+    };
+    axios
+      .post("https://jsonplaceholder.typicode.com/users", newUser)
+      .then(({ data: savedUser }) => {
+        setUsers([savedUser, ...users]);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+
+    setUsers([...users, newUser]);
+  };
+
+  //Update User
+  const UpdateUser = (user: User) => {
+    const originalUsers = [...users];
+    const updateUser = { ...user, username: user.username + "!" };
+    setUsers(users.map((u) => (u.id === user.id ? updateUser : u)));
+
+    axios
+      .patch(
+        `https://jsonplaceholder.typicode.com/users/${user.id}`,
+        updateUser
+      )
+      .catch((err) => {
+        setError(err.message);
+        setUsers(originalUsers);
+      });
+  };
   return (
     <>
       <h1>User List</h1>
       {error && <h2 className="text-danger text-center mb-5">{error}</h2>}
       {loading && <div className="spinner-border"></div>}
+
+      <button className="btn btn-primary mb-4" onClick={addUser}>
+        Add user
+      </button>
       <ul className="list-group">
         {users.map((user) => (
           <li
@@ -57,12 +98,20 @@ const FetchUser = () => {
             className="list-group-item d-flex justify-content-between"
           >
             {user.username}
-            <button
-              className="btn btn-outline-danger"
-              onClick={() => deleteUser(user)}
-            >
-              Delete
-            </button>
+            <div className="mb-1">
+              <button
+                className="btn btn-outline-secondary mx-3"
+                onClick={() => UpdateUser(user)}
+              >
+                Update User
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => deleteUser(user)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
