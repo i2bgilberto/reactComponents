@@ -1,9 +1,9 @@
-import ExpenseTracker from "./components/ExpenseTracker";
+import FetchUser from "./components/FetchUser";
 
 function App() {
   return (
     <>
-      <ExpenseTracker />
+      <FetchUser />
     </>
   );
 }
