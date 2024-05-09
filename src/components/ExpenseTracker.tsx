@@ -4,7 +4,7 @@ import ExpenseForm from "./expenseTracker/ExpenseForm";
 import { useState } from "react";
 
 const ExpenseTracker = () => {
-  const [selectCategory, setSelectCategory] = useState(null);
+  const [selectCategory, setSelectCategory] = useState("");
   const [expenses, setExpenses] = useState([
     { id: 1, description: "Groceries", price: 50, category: "Food" },
     { id: 2, description: "Gas", price: 30, category: "Transportation" },
